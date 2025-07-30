@@ -1,0 +1,409 @@
+{
+	"name": "pl_brnz_to_slv_gold",
+	"properties": {
+		"activities": [
+			{
+				"name": "brnz_claims",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/bronze/claims_b"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "slv_claims",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "brnz_claims",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/silver/incremental_load_with_SCD2/claims"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_claims",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "slv_claims",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/gold/dim_claims"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "brnz_NPI",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "gold_claims",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/bronze/npi_extract"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "slv_NPI",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "brnz_NPI",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/silver/incremental_load_with_SCD2/NPI"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "slv_encounters",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "slv_NPI",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/silver/incremental_load_with_SCD2/encounters"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_encounters",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "slv_encounters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/gold/dim_encounters"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "slv_patients",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "gold_encounters",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/silver/incremental_load_with_SCD2/patients"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "slv_transactions",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "gold_patients",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/silver/incremental_load_with_SCD2/transactions"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_patients",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "slv_patients",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/gold/dim_patients"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_transactions",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "slv_transactions",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/gold/fact_transactions"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "slv_departments",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "gold_transactions",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/silver/full_load/departments"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "slv_providers",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "gold_departments",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/silver/full_load/providers"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_departments",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "slv_departments",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/gold/dim_departments"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "gold_providers",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "slv_providers",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Users/vishaknatarajan.n@gmail.com/Health_RCM_project_using_Azure/gold/dim_providers"
+				},
+				"linkedServiceName": {
+					"referenceName": "cmn_dbx_ls",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"concurrency": 1,
+		"annotations": [],
+		"lastPublishTime": "2025-07-29T06:48:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

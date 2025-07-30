@@ -1,0 +1,9 @@
+{
+	"name": "adf-healthcare-ar",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "09c9db9e-94a8-4f15-a80d-df2b7f269bd1",
+		"tenantId": "783399d4-87bf-4dfc-9298-f490894f5e37"
+	}
+}
