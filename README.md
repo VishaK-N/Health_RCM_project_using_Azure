@@ -276,7 +276,17 @@ Once everything has setup
    - In Gold, data will be in star schema model.
    - Thus silver container can be used by down stream users like Data scientist, ML Engineers, AI Engineer etc..
    - Where the gold container is used by Data Analyst, BI developers and Stake Holders etc..
-<img src="Screenshots/gold_container_ss.png" alt="gold" width="500"> 
+<img src="Screenshots/gold_container_ss.png" alt="gold" width="500">
+
+# Text to SQL Analytics using AskyourDatabase
+### Sharing some screenshots
+<img src="Screenshots/highest_pending_ss.png" alt="gold" width="500">
+<img src="Screenshots/highest_pending2_ss.png" alt="gold" width="500">
+<img src="Screenshots/patient_surgery_list_ss.png" alt="gold" width="500">
+<img src="Screenshots/patient_surgery_list2_ss.png" alt="gold" width="500">
+
+
+
 
 
 
