@@ -79,7 +79,7 @@ Steps to intiate the project
 Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
 
  By doing this, medallion architure will be formed and storage will be created.
-<img src="Screenshots/container_ss.png" alt="services" width="500">
+<img src="Screenshots/containers_ss.png" alt="services" width="500">
 
  ---
 
@@ -175,14 +175,15 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
       - Notebooks are used to do the transformation and service principle code is used in each notebook to access file from the ADLS.
       - Similaly data will be read from the bronze from both hospitals and merged together.
       - Now creating a silver external delta table if not exists.
-      - Then creating a new temp view quality_checks where the data will go through an quality check. If the record has any null values in any of the primary columns, it can be identified by either (True or false) in a new column is_quantrained.
+      - Then creating a new temp view quality_checks where the data will go through an quality check.
+      -  If the record has any null values in any of the primary columns, it can be identified by either (True or false) in a new column is_quantrained.
       - Now merging the data into to the created silver external table based on the primary key equal condition and active_flag should be True.
       - If the condition satisfies, simply upading the record with active_flag = false and changing the date/time to current.
       - Then Inserting the new values/records to the data and updating the new records to the silver external table which is in the schema of the Databricks catalog.
       - This is process is done for all the files in the same way by implementing the SCD type-2 by using multiple notebooks.
 <img src="Screenshots/slv_claims_ss.png" alt="claims_s" width="500">
 
-      - #### Now the silver container looks like..
+      #### Now the silver container looks like..
       - silver
           - ├── 👤 Patients
           - ├── 🧑‍⚕️ Providers
@@ -208,12 +209,13 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
        - Here, the data will read from the silver location and enabling the temp view for the sql operations.
        - creating the external gold table if not exists
        - trucating it for every time to load the new data
-       - selecting the only the requiured columns which will be useful for the business use case and using a condition (i.e is_quantrained should be false) as we are only inserting the quality data for analysis.
+       - selecting the only the requiured columns which will be useful for the business use case and using a condition
+       - (i.e is_quantrained should be false) as we are only inserting the quality data for analysis.
        - Finally, inserting the data to the gold external table from the silver external table.
        - This is process is done for all the files in the same way by implementing the star schema model by using multiple notebooks.
 <img src="Screenshots/gold_claims_ss.png" alt="gold_s" width="500">
    
-      - #### Now the Gold container looks like..
+      #### Now the Gold container looks like..
       - gold
           - ├── 👤 dim_patient
           - ├── 🧑‍⚕️ dim_providers
