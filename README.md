@@ -224,7 +224,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
        - By connecting all the activity creating a proper flow using the Azure Data factory.
 
 ---
-### Step 7: Create a master pipeline for complete workflow
+### Step 8: Create a master pipeline for complete workflow
 
    -  #### Create a pipeline that connect both the pipelines
        - using the executive pipeline activity connecting both of the pipelines, on success of the `sqldb_to_brnz` --> `brnz_to_slv_gold` will be initiated.
