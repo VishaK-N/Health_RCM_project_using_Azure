@@ -75,18 +75,18 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
 
  ### Step 4: Bronze Layer
  - To bring the data into the Bronze layer ADF will be used.
-     - Create Dataset in ADF
+     - ##### Create Dataset in ADF
         - generic dataset that connect to Azure SQL DB, where the database,schema and table name will be passed as paramater while running the pipeline.
         - generic dataset in parquet format to connect with ADLS, here container, folder and file name will be passed as parameter while running the pipeline.
         - generic dataset in delimited format to connect with ADLS, same as above.
         - **Note:** generic dataset in delta format to connect with Azure Databrics Delta lake.
 
-     - Create Linked services in ADF
+     - ##### Create Linked services in ADF
         - common linked service to connect with ADLS(storage account)
         - common linked service to connect with AzureSQL DB)
         - common linked service to connect with Delta Lake
       
-     - Create a pipeline for transfering data from `sqldb to bronze`
+     - ##### Create a pipeline for transfering data from `sqldb to bronze`
         - create a Lookup activity(Lkp_emr_configs) on configs file, which scans through each record and the pipeline will run based on the metadata
         - using the Foreach activity(ForEachRecord) on the output of Lookup, so each record will go through the ForEach.
         - Now, using the metadata activity(check_existence) to check if the file already exists or not
@@ -110,12 +110,12 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
          
       - **NOTE:** using the appropriate linked services & datasets whenever required and 
   
-      - Create a Databricks Notebook for transfering data from `landing to bronze` and extracting the data using API
+      - ##### Create a Databricks Notebook for transfering data from `landing to bronze` and extracting the data using API
           - To Integrate Databricks with ADLS, create a service principle for accessing the file in ADLS from Databricks
           - create a claims notebook which reads the data from the landing container and combines the two different hospital files, also creating a new column datasource based on the hospital(hos-a/hos-b) and loading(overwriting) it to the bronze in parquet format.
           - create npi_extract note which pulls the data using api and load the data into the bronze in parquet format.
        
-      - Now the bronze container looks like..
+      - ##### Now the bronze container looks like..
       - bronze
           - claims (holds both claims data from hos-a and hos-b)
           - npi_extract (holds npi related data)
