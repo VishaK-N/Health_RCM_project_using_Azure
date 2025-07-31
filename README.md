@@ -75,7 +75,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
 
  ### Step 4: 🟫Bronze Layer
  - To bring the data into the Bronze layer ADF will be used.
-     - ##### Create Dataset in ADF
+     - #### Create Dataset in ADF
         - generic dataset that connect to Azure SQL DB, where the database,schema and table name will be passed as paramater while running the pipeline.
         - generic dataset in parquet format to connect with ADLS, here container, folder and file name will be passed as parameter while running the pipeline.
         - generic dataset in delimited format to connect with ADLS, same as above.
