@@ -22,3 +22,35 @@ On top of this, we can perform analysis and get insights like patient with long 
 - Build models🤖 etc...
 
 These measures will maintain a good cash flow in the organization, so that they invest in things that needed.
+
+---
+
+## 🧰 Tech Stack used
+
+- **🔷 Azure Databricks** – for transformation
+- **🔗 Azure Data Factory (ADF)** – for building pipelines and orchestration 
+- **☁️ Azure Data Lake Storage** – Used for storage purpose 
+- **🐙 GitHub** – Integrated with ADF for version control, collaboration, and as a source location
+- **🤖 AskYourDatabase** - for conversational querying
+- **🛢️ Azure SQL DB** - for storing source data
+
+---
+## Getting started 
+
+Steps to intiate the project
+
+### 🚀 Step 1: Create the required accounts
+- 🌐 Create and Azure account and the following services:
+   - Azure Cloud – for storage (Storage Account)
+   - Azure Databricks
+   - Azure Data Factory
+   - Azure SQL DB (2)
+   - Azure KeyVault
+
+- Create an AskYourDatabase account – for text-to-SQL querying on top of Snowflake
+<img src="ScreenShots/resouce_grp&services_ss.png" alt="services" width="500">
+
+
+
+
+
