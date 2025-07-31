@@ -281,9 +281,9 @@ Once everything has setup
 # Text to SQL Analytics using AskyourDatabase
 ### Sharing some screenshots
 <img src="Screenshots/askyourdatabase/highest_pending_ss.jpg" alt="pending1" width="500">
-<img src="Screenshots/askyourdatabase/highest_pending2_ss.png" alt="pending2" width="500">
-<img src="Screenshots/askyourdatabase/patient_surgery_list_ss.png" alt="surgery1" width="500">
-<img src="Screenshots/askyourdatabase/patient_surgery_list2_ss.png" alt="surgery2" width="500">
+<img src="Screenshots/askyourdatabase/highest_pending2_ss.jpg" alt="pending2" width="500">
+<img src="Screenshots/askyourdatabase/patient_surgery_list_ss.jpg" alt="surgery1" width="500">
+<img src="Screenshots/askyourdatabase/patient_surgery_list2_ss.jpg" alt="surgery2" width="500">
 
 
 
