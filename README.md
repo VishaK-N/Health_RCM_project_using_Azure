@@ -170,7 +170,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
       - Finally inserting the table into the table from the bronze layer.
       - This is process is done for both the files.
    
-    - **SCD-Type2**
+  - **SCD-Type2**
       - Other table in bronze container claims,NPI,transactions,encounters and patients undergo scd type 2.
       - Notebooks are used to do the transformation and service principle code is used in each notebook to access file from the ADLS.
       - Similaly data will be read from the bronze from both hospitals and merged together.
