@@ -9,7 +9,7 @@ To avoid this, to have a good cash flow and to reduce the collection period, Acc
 
 Thus,
 - Collecting the data from the different sources
-- By following the medallion Architecture Cleaning and Enriching the data and implementing the **Common Data Model**  
+- By following the medallion Architecture, Cleaning & Enriching the data and implementing the **Common Data Model**  
 - Finally, loading the data to the destination(`Datawarehouse`).
 
 On top of this, we can perform analysis and get insights like patient with long due,patients who's not likely to pay based on the patterns. By understanding these things we can take actions like
