@@ -63,6 +63,7 @@ Steps to intiate the project
     - 💳 Transactions
 
 - This will serve as one of the source systems for the pipeline 📥
+<img src="Screenshots/azure_sql_db2_ss.png" alt="sqldb2" width="500">
 
 ---
 
@@ -77,7 +78,8 @@ Steps to intiate the project
      
 Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
 
- By doing, medallion architure will be formed and storage will be created.
+ By doing this, medallion architure will be formed and storage will be created.
+<img src="Screenshots/container_ss.png" alt="services" width="500">
 
  ---
 
@@ -100,29 +102,33 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
         - Now, using the metadata activity(check_existence) to check if the file already exists or not
         - getmetadata activity(check_existence) checks for the location`bronze layer`(location allocated: by passing the parameter based on the config file Lookup activity((Lkp_emr_configs))
         - **In simple getmetadata activity tells if file exists already or not in bronze container, if present archiving it or transfering it in the bronze for the first time.**
+<img src="Screenshots/adf_pl4_ss.png" alt="adf4" width="500"> 
       
         - Using if-condition activity(IfalreadyExists), if `True` from metadata activity then archiving it,other wise nothing.
         - archive location would be `archive/year/month/day/*.csv` either in datasource hos-a or hos-b.
         - On sucess of this if-condition(IfalreadyExists) following up with the another if-condition2(IfNotExists).
         - Where based on the output of the forEach(which scans each record of config file) If load_type column in record is full, then full load will be performed from the SQLDB.
-        - Otherwsie, incremental load will be performed. This is what the second if-condition(IfNotExists) will be performihelng.
+        - Otherwsie, incremental load will be performed. This is what the second if-condition(IfNotExists) will be performing.
         - Inside the if-condition2(IfNotExists)
           
             - **Full** here use copy activity(copy_full_load) to pull the data from db and loaded into the bronze in parquet format
             - Also, after successfull operation. Will be maintaining the pipeline run as logs, again using the Lookup activity(full_load_logs).
             - Inserting into the delta table in databricks pulling required values from the output of the forEach(which scans each record of config file).
+<img src="Screenshots/load_logs_ss.png" alt="logs" width="500">
          
             - **Incremenatal** here as the data should be incrementally loaded before copying, a condition is used.
             - for that, again a lookup activity to find the max load_date column value from the load_log which is in the delta lake databricks.
             - if the only watermark column is greater than the load_date then only the files will be transfered/ copied to the bronze in parquet format.
             - Similar to the Full load, logs will be maintained in the delta table databricks.
          
-      - **NOTE:** using the appropriate linked services & datasets whenever required and 
-  
+      - **NOTE:** using the appropriate linked services & datasets whenever required.
+<img src="Screenshots/adf_pl2_ss.png" alt="adf2" width="500">
+     
       - #### Create a Databricks Notebook for transfering data from `landing to bronze` and extracting the data using API
           - To Integrate Databricks with ADLS, create a service principle for accessing the file in ADLS from Databricks
           - create a claims notebook which reads the data from the landing container and combines the two different hospital files, also creating a new column datasource based on the hospital(hos-a/hos-b) and loading(overwriting) it to the bronze in parquet format.
           - create npi_extract note which pulls the data using api and load the data into the bronze in parquet format.
+<img src="Screenshots/brnz_claims_ss.png" alt="claims_N" width="500">
        
       - #### Now the bronze container looks like..
       - bronze
@@ -142,6 +148,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
               - 📅 Encounters
               - 🏬 Departments
               - 💳 Transactions
+<img src="Screenshots/bronze_container_ss.png" alt="b_container" width="500">
            
 ---
                 
@@ -153,6 +160,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
 
   - In Databricks, creating a external delta table in databricks and the load the data from the bronze for each file.
   - Here, the external location will be the silver container of the ADLS.
+<img src="Screenshots/dbx_catalog_ss.png" alt="catalog" width="500">
 
   - **Full_load**
       - providers and departments table are goes through full load as they are small in size.
@@ -172,6 +180,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
       - If the condition satisfies, simply upading the record with active_flag = false and changing the date/time to current.
       - Then Inserting the new values/records to the data and updating the new records to the silver external table which is in the schema of the Databricks catalog.
       - This is process is done for all the files in the same way by implementing the SCD type-2 by using multiple notebooks.
+<img src="Screenshots/slv_claims_ss.png" alt="claims_s" width="500">
 
       - #### Now the silver container looks like..
       - silver
@@ -191,8 +200,9 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
   - As we have 7 silver tables in the bronze container, for AR management 6 files will be loaded in the gold layer and forming a star schema
   - Everything will be done using the notebooks(`Databricks`) and load into the gold container.
 
-  - Similar as the silve transfomation, creating a external delta table in databricks and the load the data from the silver for each file.
+  - Similar as the silver transfomation, creating a external delta table in databricks and the load the data from the silver for each file.
   - Here, the external location will be the gold container of the ADLS.
+<img src="Screenshots/service_principle_ss.png" alt="sp" width="500">
 
        - service principle code will be run, to access the adls files or we can directly read the silver tables
        - Here, the data will read from the silver location and enabling the temp view for the sql operations.
@@ -201,6 +211,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
        - selecting the only the requiured columns which will be useful for the business use case and using a condition (i.e is_quantrained should be false) as we are only inserting the quality data for analysis.
        - Finally, inserting the data to the gold external table from the silver external table.
        - This is process is done for all the files in the same way by implementing the star schema model by using multiple notebooks.
+<img src="Screenshots/gold_claims_ss.png" alt="gold_s" width="500">
    
       - #### Now the Gold container looks like..
       - gold
@@ -211,6 +222,8 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
           - ├── 💳 dim_transactions
           - ├── 📄 dim_claims
           - └── 🆔 fact_transactions
+
+<img src="Screenshots/gold_container_ss.png" alt="g_container" width="500">
        
 ---
 
@@ -222,6 +235,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
        - **🟤 brnz_claims → ⚪ slv_claims → 🟡 gold_claims → 🟤 brnz_NPI → ⚪ slv_NPI → ⚪ slv_encounters → 🟡 gold_encounters → 
 ⚪ slv_patients → 🟡 gold_patients → ⚪ slv_transactions → 🟡 gold_transactions → ⚪ slv_departments → 🟡 gold_departments → ⚪ slv_providers → 🟡 gold_providers**
        - By connecting all the activity creating a proper flow using the Azure Data factory.
+<img src="Screenshots/adf_pl3_ss.png" alt="adf3" width="500">
 
 ---
 ### Step 8: Create a master pipeline for complete workflow
@@ -229,7 +243,8 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
    -  #### Create a pipeline that connect both the pipelines
        - using the executive pipeline activity connecting both of the pipelines, on success of the `sqldb_to_brnz` --> `brnz_to_slv_gold` will be initiated.
        - One after the other will be triggered and run.
-    
+<img src="Screenshots/adf_pl1_ss.png" alt="adf1" width="500"> 
+
 ---
 
 ## ▶️ Usage
@@ -237,7 +252,8 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
 Once everything has setup
 
 1.**Triggering the master pipeline**
-   - Running the pipeline manually or run it with any of the trigger
+   - Running the pipeline manually or run it with any of the trigger.
+<img src="Screenshots/master_pl_run_ss.png" alt="m1" width="500"> 
 
 2. **Master Pipeline flow**
    - once the pipeline triggered, ADF pipeline will be run based on the metadata(config file in config container).
@@ -245,15 +261,19 @@ Once everything has setup
    - As per the number of records in the config file, pipeline will run and pushing the data to the bronze layer.
    - Once successfully compledted it will start the next pipeline starts
    - According to the above flow mentioned for databricks notebook, it will initiate and process one by one.
+<img src="Screenshots/master_pl_run2_ss.png" alt="m2" width="500"> 
 
 3. **Monitor Pipeline Execution**
    - Use the **Monitor** tab in ADF to track runs and debug any failures.
+<img src="Screenshots/master_pl_run3_ss.png" alt="m3" width="500"> 
   
 4. **Verify Output**
    - one completed, data will be present in the silver container as full load data or incremental data and
    - In Gold, data will be in star schema model.
    - Thus silver container can be used by down stream users like Data scientist, ML Engineers, AI Engineer etc..
    - Where the gold container is used by Data Analyst, BI developers and Stake Holders etc..
+<img src="Screenshots/gold_container_ss.png" alt="gold" width="500"> 
+
 
 
 
