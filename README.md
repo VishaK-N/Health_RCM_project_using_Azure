@@ -111,43 +111,43 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
         - Otherwsie, incremental load will be performed. This is what the second if-condition(IfNotExists) will be performing.
         - Inside the if-condition2(IfNotExists)
           
-            - **Full** here use copy activity(copy_full_load) to pull the data from db and loaded into the bronze in parquet format
-            - Also, after successfull operation. Will be maintaining the pipeline run as logs, again using the Lookup activity(full_load_logs).
-            - Inserting into the delta table in databricks pulling required values from the output of the forEach(which scans each record of config file).
-<img src="Screenshots/load_logs_ss.png" alt="logs" width="500">
+        - **Full** here use copy activity(copy_full_load) to pull the data from db and loaded into the bronze in parquet format
+        - Also, after successfull operation. Will be maintaining the pipeline run as logs, again using the Lookup activity(full_load_logs).
+        - Inserting into the delta table in databricks pulling required values from the output of the forEach(which scans each record of config file).
+<img src="Screenshots/load_log_ss.png" alt="logs" width="500">
          
-            - **Incremenatal** here as the data should be incrementally loaded before copying, a condition is used.
-            - for that, again a lookup activity to find the max load_date column value from the load_log which is in the delta lake databricks.
-            - if the only watermark column is greater than the load_date then only the files will be transfered/ copied to the bronze in parquet format.
+        - **Incremenatal** here as the data should be incrementally loaded before copying, a condition is used.
+        - for that, again a lookup activity to find the max load_date column value from the load_log which is in the delta lake databricks.
+        - if the only watermark column is greater than the load_date then only the files will be transfered/ copied to the bronze in parquet format.
             - Similar to the Full load, logs will be maintained in the delta table databricks.
          
       - **NOTE:** using the appropriate linked services & datasets whenever required.
 <img src="Screenshots/adf_pl2_ss.png" alt="adf2" width="500">
      
       - #### Create a Databricks Notebook for transfering data from `landing to bronze` and extracting the data using API
-          - To Integrate Databricks with ADLS, create a service principle for accessing the file in ADLS from Databricks
-          - create a claims notebook which reads the data from the landing container and combines the two different hospital files, also creating a new column datasource based on the hospital(hos-a/hos-b) and loading(overwriting) it to the bronze in parquet format.
-          - create npi_extract note which pulls the data using api and load the data into the bronze in parquet format.
+         - To Integrate Databricks with ADLS, create a service principle for accessing the file in ADLS from Databricks
+         - create a claims notebook which reads the data from the landing container and combines the two different hospital files, also creating a new column datasource based on the hospital(hos-a/hos-b) and loading(overwriting) it to the bronze in parquet format.
+         - create npi_extract note which pulls the data using api and load the data into the bronze in parquet format.
 <img src="Screenshots/brnz_claims_ss.png" alt="claims_N" width="500">
        
       - #### Now the bronze container looks like..
       - bronze
-          - claims (holds both claims data from hos-a and hos-b)
-          - npi_extract (holds npi related data)
-          - hos-a
-              - archive (archive/year/month/day/*.csv files)
-              - 👤 Patients
-              - 🧑‍⚕️ Providers
-              - 📅 Encounters
-              - 🏬 Departments
-              - 💳 Transactions
+         - claims (holds both claims data from hos-a and hos-b)
+         - npi_extract (holds npi related data)
+         - hos-a
+            - archive (archive/year/month/day/*.csv files)
+            - 👤 Patients
+            - 🧑‍⚕️ Providers
+            - 📅 Encounters
+            - 🏬 Departments
+            - 💳 Transactions
           - hos-b
-              - archive (archive/year/month/day/*.csv files)
-              - 👤 Patients
-              - 🧑‍⚕️ Providers
-              - 📅 Encounters
-              - 🏬 Departments
-              - 💳 Transactions
+             - archive (archive/year/month/day/*.csv files)
+             - 👤 Patients
+             - 🧑‍⚕️ Providers
+             - 📅 Encounters
+             - 🏬 Departments
+             - 💳 Transactions
 <img src="Screenshots/bronze_container_ss.png" alt="b_container" width="500">
            
 ---
