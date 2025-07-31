@@ -103,7 +103,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
         - getmetadata activity(check_existence) checks for the location`bronze layer`(location allocated: by passing the parameter based on the config file Lookup activity((Lkp_emr_configs))
         - **In simple getmetadata activity tells if file exists already or not in bronze container, if present archiving it or transfering it in the bronze for the first time.**
 <img src="Screenshots/adf_pl4_ss.png" alt="adf4" width="500"> 
-      
+   
         - Using if-condition activity(IfalreadyExists), if `True` from metadata activity then archiving it,other wise nothing.
         - archive location would be `archive/year/month/day/*.csv` either in datasource hos-a or hos-b.
         - On sucess of this if-condition(IfalreadyExists) following up with the another if-condition2(IfNotExists).
@@ -176,7 +176,8 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
       - Similaly data will be read from the bronze from both hospitals and merged together.
       - Now creating a silver external delta table if not exists.
       - Then creating a new temp view quality_checks where the data will go through an quality check.
-      -  If the record has any null values in any of the primary columns, it can be identified by either (True or false) in a new column is_quantrained.
+        
+      - If the record has any null values in any of the primary columns, it can be identified by either (True or false) in a new column is_quantrained.
       - Now merging the data into to the created silver external table based on the primary key equal condition and active_flag should be True.
       - If the condition satisfies, simply upading the record with active_flag = false and changing the date/time to current.
       - Then Inserting the new values/records to the data and updating the new records to the silver external table which is in the schema of the Databricks catalog.
@@ -209,6 +210,7 @@ Bronze(parquet) -> Silver(Delta) -> Gold(Delta)
        - Here, the data will read from the silver location and enabling the temp view for the sql operations.
        - creating the external gold table if not exists
        - trucating it for every time to load the new data
+         
        - selecting the only the requiured columns which will be useful for the business use case and using a condition
        - (i.e is_quantrained should be false) as we are only inserting the quality data for analysis.
        - Finally, inserting the data to the gold external table from the silver external table.
